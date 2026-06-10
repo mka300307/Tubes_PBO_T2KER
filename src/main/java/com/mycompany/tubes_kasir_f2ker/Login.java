@@ -119,7 +119,7 @@ public class Login extends javax.swing.JFrame {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/db_kasir",
                 "root",
-                ""  // sesuaikan password MySQL kamu
+                "" 
             );
 
             String sql = "SELECT * FROM users WHERE username = ?";
@@ -130,10 +130,8 @@ public class Login extends javax.swing.JFrame {
             if (rs.next()) {
                 String hashDiDB = rs.getString("password");
 
-                // Verifikasi password bcrypt
                 if (BCrypt.checkpw(password, hashDiDB)) {
 
-                    // Simpan data user ke variabel static
                     SessionUser.id       = rs.getInt("id");
                     SessionUser.username = rs.getString("username");
                     SessionUser.role     = rs.getString("role");
@@ -141,32 +139,31 @@ public class Login extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this,
                         "Selamat datang, " + SessionUser.username + "!\nRole: " + SessionUser.role);
 
-//                    // Buka form sesuai role
-//                    switch (SessionUser.role) {
-//                        case "super_admin":
-//                            JOptionPane.showMessageDialog(this,
-//                            "Welcome Super Admin",
-//                            "Peringatan",
-//                            JOptionPane.WARNING_MESSAGE);;
-//                            break;
-//                        case "admin":
-//                            JOptionPane.showMessageDialog(this,
-//                    "Welcome Admin",
-//                    "Peringatan",
-//                    JOptionPane.WARNING_MESSAGE);
-//                            break;
-//                        case "kasir":
-//                            JOptionPane.showMessageDialog(this,
-//                    "Welcode kasir",
-//                    "Peringatan",
-//                    JOptionPane.WARNING_MESSAGE);
-//                            break;
-//                        default:
-//                            JOptionPane.showMessageDialog(this, "Role tidak dikenali!");
-//                            return;
-//                    }
-//
-//                    this.dispose(); // tutup form login
+                    switch (SessionUser.role) {
+                        case "super_admin":
+                            JOptionPane.showMessageDialog(this,
+                            "Welcome Super Admin",
+                            "Peringatan",
+                            JOptionPane.WARNING_MESSAGE);;
+                            break;
+                        case "admin":
+                            JOptionPane.showMessageDialog(this,
+                    "Welcome Admin",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE);
+                            break;
+                        case "kasir":
+                            JOptionPane.showMessageDialog(this,
+                    "Welcode kasir",
+                    "Peringatan",
+                    JOptionPane.WARNING_MESSAGE);
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(this, "Role tidak dikenali!");
+                            return;
+                    }
+
+                    this.dispose(); 
 
                 } else {
                     JOptionPane.showMessageDialog(this,
