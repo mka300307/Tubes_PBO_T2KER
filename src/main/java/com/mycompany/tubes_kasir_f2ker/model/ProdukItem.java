@@ -18,7 +18,6 @@ public class ProdukItem {
     private double harga;
     private int stok;
 
-    // Constructor lengkap
     public ProdukItem(int id, String nama, int idKategori, String namaKategori, double harga, int stok) {
         this.id           = id;
         this.nama         = nama;
@@ -28,7 +27,6 @@ public class ProdukItem {
         this.stok         = stok;
     }
 
-    // Constructor tanpa id (untuk insert baru)
     public ProdukItem(String nama, int idKategori, String namaKategori, double harga, int stok) {
         this.id           = 0;
         this.nama         = nama;

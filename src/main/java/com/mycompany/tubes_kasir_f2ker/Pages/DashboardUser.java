@@ -156,7 +156,7 @@ public class DashboardUser extends javax.swing.JFrame {
     private void btnCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCariActionPerformed
         String keyword = tfCari.getText().trim();
         
-        if(keyword.equalsIgnoreCase("masukan username user....")){
+        if(keyword.equalsIgnoreCase("Masukan kategori...")){
             keyword = "";
         }
         

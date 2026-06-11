@@ -16,13 +16,22 @@ public class KategoriItem {
         this.id   = id;
         this.nama = nama;
     }
-
+    
+    public KategoriItem(String nama) {
+        this.id   = 0;
+        this.nama = nama;
+    }
+    
     public int getId() {
         return id;
     }
 
     public String getNama() {
         return nama;
+    }
+    
+    public void setId(int id){
+        this.id = id;
     }
 
     @Override
