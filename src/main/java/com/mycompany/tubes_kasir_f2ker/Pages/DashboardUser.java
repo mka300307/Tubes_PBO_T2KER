@@ -9,17 +9,15 @@ package com.mycompany.tubes_kasir_f2ker.Pages;
  * @author attau
  */
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.mycompany.tubes_kasir_f2ker.controller.UserController;
+import com.mycompany.tubes_kasir_f2ker.model.UserItem;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class DashboardUser extends javax.swing.JFrame {
-    
+    private final UserController userController = new UserController();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(DashboardUser.class.getName());
 
     /**
@@ -40,56 +38,14 @@ public class DashboardUser extends javax.swing.JFrame {
     }
     
     public void loadDataUser(String keyword) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""
-            );
-
-            String sql;
-            if (keyword.isEmpty()) {
-                sql = "SELECT username, role FROM users ORDER BY id ASC";
-                ps = conn.prepareStatement(sql);
-            } else {
-                sql = "SELECT username, role FROM users "
-                    + "WHERE username LIKE ? "
-                    + "ORDER BY id ASC";
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, "%" + keyword + "%");
-            }
-
-            rs = ps.executeQuery();
-
-            // Kosongkan tabel dulu
+            List<UserItem> list = userController.searchUser(keyword);
             model.setRowCount(0);
-
-            while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getString("username"),
-                    rs.getString("role")
-                });
+            for (UserItem u : list) {
+                model.addRow(new Object[]{ u.getUsername(), u.getRole() });
             }
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal load data: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     

@@ -4,16 +4,13 @@
  */
 package com.mycompany.tubes_kasir_f2ker.Pages;
 
+import com.mycompany.tubes_kasir_f2ker.controller.UserController;
 import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.mycompany.tubes_kasir_f2ker.model.UserItem;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -22,6 +19,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class ManageUser extends javax.swing.JFrame {
     private int selectedId = -1;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageUser.class.getName());
+    private final UserController userController = new UserController();
 
     /**
      * Creates new form AddUser
@@ -195,228 +193,63 @@ public class ManageUser extends javax.swing.JFrame {
 
     private void btnUpdateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateUserActionPerformed
         if (selectedId == -1) {
-            JOptionPane.showMessageDialog(this,
-                "Pilih user dari tabel terlebih dahulu!",
-                "Peringatan",
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Pilih user dari tabel terlebih dahulu!",
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        Connection conn = null;
-        PreparedStatement ps = null;
+        UserItem input = getFormInput(false);
+        if (input == null) return;
+        input.setId(selectedId);
+
+        String newPassword = new String(tfPass.getPassword()).trim();
 
         try {
-            String username = tfName.getText().trim();
-            String password = new String(tfPass.getPassword()).trim();
-            String role     = cbRole.getSelectedItem().toString();
-
-            if (username.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "Username tidak boleh kosong!",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""
-            );
-
-            // Kalau password diisi, update sekalian — kalau kosong, skip password
-            if (!password.isEmpty()) {
-                if (password.length() < 6) {
-                    JOptionPane.showMessageDialog(this,
-                        "Password minimal 6 karakter!",
-                        "Peringatan",
-                        JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-                ps = conn.prepareStatement(
-                    "UPDATE users SET username = ?, password = ?, role = ? WHERE id = ?"
-                );
-                ps.setString(1, username);
-                ps.setString(2, hashPassword);
-                ps.setString(3, role);
-                ps.setInt(4, selectedId);
-            } else {
-                // Update tanpa ganti password
-                ps = conn.prepareStatement(
-                    "UPDATE users SET username = ?, role = ? WHERE id = ?"
-                );
-                ps.setString(1, username);
-                ps.setString(2, role);
-                ps.setInt(3, selectedId);
-            }
-
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(this,
-                "User berhasil diupdate!",
-                "Sukses",
+            userController.updateUser(input, newPassword);
+            JOptionPane.showMessageDialog(this, "User berhasil diupdate!", "Sukses",
                 JOptionPane.INFORMATION_MESSAGE);
-
             clearForm();
             loadDataUser("");
-            
-            
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal update user: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            try {
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnUpdateUserActionPerformed
 
     private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
-        Connection conn = null;
-        PreparedStatement ps = null;
-        PreparedStatement cek = null;
-        ResultSet rs = null;
+        UserItem input = getFormInput(true);
+        if (input == null) return;
 
         try {
-            String username = tfName.getText().trim();
-            String password = new String(tfPass.getPassword()).trim();
-            String role     = cbRole.getSelectedItem().toString();
-
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "Username dan password tidak boleh kosong!",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            if (password.length() < 6) {
-                JOptionPane.showMessageDialog(this,
-                    "Password minimal 6 karakter!",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""
-            );
-
-            cek = conn.prepareStatement(
-                "SELECT id FROM users WHERE username = ?"
-            );
-            cek.setString(1, username);
-            rs = cek.executeQuery();
-            if (rs.next()) {
-                JOptionPane.showMessageDialog(this,
-                    "Username sudah digunakan!",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-            ps = conn.prepareStatement(
-                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)"
-            );
-            ps.setString(1, username);
-            ps.setString(2, hashPassword);
-            ps.setString(3, role);
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(this,
-                "User berhasil ditambahkan!",
-                "Sukses",
+            userController.addUser(input);
+            JOptionPane.showMessageDialog(this, "User berhasil ditambahkan!", "Sukses",
                 JOptionPane.INFORMATION_MESSAGE);
-
             clearForm();
             loadDataUser("");
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal tambah user: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (cek != null)  cek.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAddUserActionPerformed
 
     private void btnDeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteUserActionPerformed
         if (selectedId == -1) {
-            JOptionPane.showMessageDialog(this,
-                "Pilih user dari tabel terlebih dahulu!",
-                "Peringatan",
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Pilih user dari tabel terlebih dahulu!",
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int konfirmasi = JOptionPane.showConfirmDialog(this,
             "Yakin ingin menghapus user " + tfName.getText() + "?",
-            "Konfirmasi Hapus",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE);
-
+            "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (konfirmasi != JOptionPane.YES_OPTION) return;
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""
-            );
-
-            ps = conn.prepareStatement(
-                "DELETE FROM users WHERE id = ?"
-            );
-            ps.setInt(1, selectedId);
-            ps.executeUpdate();
-
-            JOptionPane.showMessageDialog(this,
-                "User berhasil dihapus!",
-                "Sukses",
+            userController.deleteUser(selectedId);
+            JOptionPane.showMessageDialog(this, "User berhasil dihapus!", "Sukses",
                 JOptionPane.INFORMATION_MESSAGE);
-
             clearForm();
             loadDataUser("");
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal hapus user: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            try {
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnDeleteUserActionPerformed
 
@@ -426,61 +259,20 @@ public class ManageUser extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     public void loadDataUser(String keyword) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""
-            );
-
-            String sql;
-            if (keyword.isEmpty()) {
-                sql = "SELECT username, role FROM users ORDER BY id ASC";
-                ps = conn.prepareStatement(sql);
-            } else {
-                sql = "SELECT username, role FROM users "
-                    + "WHERE username LIKE ? "
-                    + "ORDER BY id ASC";
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, "%" + keyword + "%");
-            }
-
-            rs = ps.executeQuery();
-
+            List<UserItem> list = userController.searchUser(keyword);
             model.setRowCount(0);
-
-            while (rs.next()) {
-                model.addRow(new Object[]{
-                    rs.getString("username"),
-                    rs.getString("role")
-                });
+            for (UserItem u : list) {
+                model.addRow(new Object[]{ u.getUsername(), u.getRole() });
             }
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal load data: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
     private void clearForm() {
         tfName.setText("");
-        tfPass.setText(null);
+        tfPass.setText("");
         cbRole.setSelectedIndex(0);
         selectedId = -1;
         tblUser.clearSelection();
@@ -500,47 +292,14 @@ public class ManageUser extends javax.swing.JFrame {
         int row = tblUser.getSelectedRow();
         if (row == -1) return;
 
-        // Ambil data dari tabel
         String username = tblUser.getValueAt(row, 0).toString();
         String role     = tblUser.getValueAt(row, 1).toString();
 
-        // Ambil id dari database berdasarkan username
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""
-            );
-
-            ps = conn.prepareStatement(
-                "SELECT id FROM users WHERE username = ?"
-            );
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                selectedId = rs.getInt("id");
-            }
-
+            selectedId = userController.getIdByUsername(username);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal ambil data: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         tfName.setText(username);
@@ -548,6 +307,31 @@ public class ManageUser extends javax.swing.JFrame {
         cbRole.setSelectedItem(role);
     }
     
+     private UserItem getFormInput(boolean passwordWajib) {
+        String username = tfName.getText().trim();
+        String password = new String(tfPass.getPassword()).trim();
+        String role     = cbRole.getSelectedItem().toString();
+
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Username tidak boleh kosong!",
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        if (passwordWajib && password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Password tidak boleh kosong!",
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        if (!password.isEmpty() && password.length() < 6) {
+            JOptionPane.showMessageDialog(this, "Password minimal 6 karakter!",
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        return new UserItem(username, password, role);
+    }
     /**
      * @param args the command line arguments
      */
