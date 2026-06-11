@@ -4,10 +4,13 @@ com\mycompany\tubes_kasir_f2ker\GeneratePassword.class
 com\mycompany\tubes_kasir_f2ker\Login.class
 com\mycompany\tubes_kasir_f2ker\ManageUser$3.class
 com\mycompany\tubes_kasir_f2ker\DashboardProduct.class
+com\mycompany\tubes_kasir_f2ker\KategoriItem.class
+com\mycompany\tubes_kasir_f2ker\controller\ProdukController.class
 com\mycompany\tubes_kasir_f2ker\ManageUser$1.class
 com\mycompany\tubes_kasir_f2ker\ManageUser.class
 com\mycompany\tubes_kasir_f2ker\Tubes_Kasir_F2KER.class
 com\mycompany\tubes_kasir_f2ker\DashboardProduct$2.class
+com\mycompany\tubes_kasir_f2ker\model\ProdukItem.class
 com\mycompany\tubes_kasir_f2ker\DashboardUser$2.class
 com\mycompany\tubes_kasir_f2ker\DashboardUser$1.class
 com\mycompany\tubes_kasir_f2ker\ManageProduk$2.class
