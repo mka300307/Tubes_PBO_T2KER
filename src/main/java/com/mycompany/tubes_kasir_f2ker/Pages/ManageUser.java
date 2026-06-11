@@ -307,7 +307,7 @@ public class ManageUser extends javax.swing.JFrame {
         cbRole.setSelectedItem(role);
     }
     
-     private UserItem getFormInput(boolean passwordWajib) {
+    private UserItem getFormInput(boolean passwordWajib) {
         String username = tfName.getText().trim();
         String password = new String(tfPass.getPassword()).trim();
         String role     = cbRole.getSelectedItem().toString();
