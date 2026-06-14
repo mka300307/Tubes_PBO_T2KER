@@ -4,14 +4,9 @@
  */
 package com.mycompany.tubes_kasir_f2ker.Pages;
 
+import com.mycompany.tubes_kasir_f2ker.controller.AuthController;
 import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import org.mindrot.jbcrypt.BCrypt;
 /**
  *
  * @author attau
@@ -99,101 +94,24 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        String username = tfName.getText().trim();
+        String password = new String(jfPass.getPassword());
 
         try {
-            String username = tfName.getText().trim();
-            String password = new String(jfPass.getPassword()).trim();
+            AuthController authController = new AuthController();
+            authController.login(username, password);
 
-            // Validasi kosong
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "Username dan password tidak boleh kosong!",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                "" 
-            );
-
-            String sql = "SELECT * FROM users WHERE username = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                String hashDiDB = rs.getString("password");
-
-                if (BCrypt.checkpw(password, hashDiDB)) {
-
-                    SessionUser.id       = rs.getInt("id");
-                    SessionUser.username = rs.getString("username");
-                    SessionUser.role     = rs.getString("role");
-
-                    JOptionPane.showMessageDialog(this,
-                        "Selamat datang, " + SessionUser.username + "!\nRole: " + SessionUser.role);
-
-                    switch (SessionUser.role) {
-                        case "super_admin":
-                            JOptionPane.showMessageDialog(this,
-                            "Welcome Super Admin",
-                            "Peringatan",
-                            JOptionPane.WARNING_MESSAGE);;
-                            break;
-                        case "admin":
-                            JOptionPane.showMessageDialog(this,
-                    "Welcome Admin",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                            break;
-                        case "kasir":
-                            JOptionPane.showMessageDialog(this,
-                    "Welcode kasir",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                            break;
-                        default:
-                            JOptionPane.showMessageDialog(this, "Role tidak dikenali!");
-                            return;
-                    }
-
-                    this.dispose(); 
-
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                        "Password salah!",
-                        "Login Gagal",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-
-            } else {
-                JOptionPane.showMessageDialog(this,
-                    "Username tidak ditemukan!",
-                    "Login Gagal",
-                    JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Error: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+                "Selamat datang, " + SessionUser.username + "!\nRole: " + SessionUser.role);
 
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            new DashboardProduct().setVisible(true);
+            this.dispose();
+
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(this,
+                e.getMessage(),
+                "Login Gagal",
+                JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
