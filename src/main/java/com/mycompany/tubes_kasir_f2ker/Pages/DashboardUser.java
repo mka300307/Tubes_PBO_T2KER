@@ -10,6 +10,7 @@ package com.mycompany.tubes_kasir_f2ker.Pages;
  */
 
 import com.mycompany.tubes_kasir_f2ker.controller.UserController;
+import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
 import com.mycompany.tubes_kasir_f2ker.model.UserItem;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -25,6 +26,8 @@ public class DashboardUser extends javax.swing.JFrame {
      */
     public DashboardUser() {
         initComponents();
+        setTitle("Dashboard User - " + SessionUser.username);
+        this.setLocationRelativeTo(null);
         model.addColumn("Username");
         model.addColumn("Role");
         tblUser.setModel(model);
@@ -65,10 +68,14 @@ public class DashboardUser extends javax.swing.JFrame {
         tfCari = new javax.swing.JTextField();
         btnCari = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        Fitur = new javax.swing.JMenu();
+        User = new javax.swing.JMenuItem();
+        Produk = new javax.swing.JMenuItem();
+        Kategori = new javax.swing.JMenuItem();
+        Transaksi = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -105,15 +112,33 @@ public class DashboardUser extends javax.swing.JFrame {
         jButton1.setText("Manage User");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        jLabel2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 14)); // NOI18N
+        jLabel2.setText("Dasboard User");
 
-        jMenu2.setText("Transaksi");
-        jMenu2.addActionListener(this::jMenu2ActionPerformed);
-        jMenuBar1.add(jMenu2);
+        Fitur.setText("Fitur");
+        Fitur.addActionListener(this::FiturActionPerformed);
 
-        jMenu3.setText("History Transaksi");
-        jMenuBar1.add(jMenu3);
+        User.setText("Dashboard User");
+        User.addActionListener(this::UserActionPerformed);
+        Fitur.add(User);
+
+        Produk.setText("Dasbord Produk");
+        Produk.addActionListener(this::ProdukActionPerformed);
+        Fitur.add(Produk);
+
+        Kategori.setText("Dashboard Kategori");
+        Kategori.addActionListener(this::KategoriActionPerformed);
+        Fitur.add(Kategori);
+
+        Transaksi.setText("Dashboard Transaksi");
+        Transaksi.addActionListener(this::TransaksiActionPerformed);
+        Fitur.add(Transaksi);
+
+        jMenuItem1.setText("Logout");
+        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
+        Fitur.add(jMenuItem1);
+
+        jMenuBar1.add(Fitur);
 
         setJMenuBar(jMenuBar1);
 
@@ -124,30 +149,34 @@ public class DashboardUser extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnCari))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(34, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(233, 233, 233)
+                        .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCari))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(103, 103, 103)
+                        .addComponent(jButton1)))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jLabel2))
                 .addGap(35, 35, 35)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCari))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
 
         pack();
@@ -168,13 +197,49 @@ public class DashboardUser extends javax.swing.JFrame {
     }//GEN-LAST:event_tfCariActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (!SessionUser.role.equals("super_admin")) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Anda tidak memiliki akses untuk fitur ini!",
+                "Akses Ditolak",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
         new ManageUser().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenu2ActionPerformed
+    private void FiturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FiturActionPerformed
+        new DashboardUser().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_FiturActionPerformed
+
+    private void ProdukActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProdukActionPerformed
+        new DashboardProduct().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ProdukActionPerformed
+
+    private void UserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UserActionPerformed
+        new DashboardUser().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_UserActionPerformed
+
+    private void KategoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_KategoriActionPerformed
+        new DashboardKategori().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_KategoriActionPerformed
+
+    private void TransaksiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TransaksiActionPerformed
+        new DashboardTransaksi().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_TransaksiActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        new Login().setVisible(true);
+        SessionUser.logout();
+        this.dispose();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private DefaultTableModel model = new DefaultTableModel(){
         @Override
@@ -212,13 +277,17 @@ public class DashboardUser extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu Fitur;
+    private javax.swing.JMenuItem Kategori;
+    private javax.swing.JMenuItem Produk;
+    private javax.swing.JMenuItem Transaksi;
+    private javax.swing.JMenuItem User;
     private javax.swing.JButton btnCari;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblUser;
     private javax.swing.JTextField tfCari;
