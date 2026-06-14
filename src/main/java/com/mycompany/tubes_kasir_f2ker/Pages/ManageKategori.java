@@ -51,7 +51,7 @@ public class ManageKategori extends javax.swing.JFrame {
         String namaKategori = tblKategori.getValueAt(row, 0).toString();
 
         try {
-            selectedId = kategoriController.getIdByUsername(namaKategori);
+            selectedId = kategoriController.getIdByNama(namaKategori);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return;
