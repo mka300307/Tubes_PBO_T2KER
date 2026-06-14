@@ -16,6 +16,7 @@ com\mycompany\tubes_kasir_f2ker\Pages\ManageProduk.class
 com\mycompany\tubes_kasir_f2ker\model\UserItem.class
 com\mycompany\tubes_kasir_f2ker\Services\KategoriService.class
 com\mycompany\tubes_kasir_f2ker\Pages\ManageProduk$1.class
+com\mycompany\tubes_kasir_f2ker\controller\AuthController.class
 com\mycompany\tubes_kasir_f2ker\model\TransaksiItem.class
 com\mycompany\tubes_kasir_f2ker\Services\ProdukService.class
 com\mycompany\tubes_kasir_f2ker\controller\UserController.class
@@ -29,6 +30,7 @@ com\mycompany\tubes_kasir_f2ker\Pages\DashboardTransaksi$1.class
 com\mycompany\tubes_kasir_f2ker\Pages\Transaksi.class
 com\mycompany\tubes_kasir_f2ker\model\ProdukItem.class
 com\mycompany\tubes_kasir_f2ker\Pages\DashboardUser$2.class
+com\mycompany\tubes_kasir_f2ker\Services\AuthService.class
 com\mycompany\tubes_kasir_f2ker\model\KategoriItem.class
 com\mycompany\tubes_kasir_f2ker\Pages\DashboardUser.class
 com\mycompany\tubes_kasir_f2ker\Pages\Transaksi$1.class
