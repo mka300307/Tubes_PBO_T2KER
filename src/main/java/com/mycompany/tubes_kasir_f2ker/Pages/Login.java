@@ -2,15 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.tubes_kasir_f2ker;
+package com.mycompany.tubes_kasir_f2ker.Pages;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.mycompany.tubes_kasir_f2ker.controller.AuthController;
+import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
 import javax.swing.JOptionPane;
-import org.mindrot.jbcrypt.BCrypt;
 /**
  *
  * @author attau
@@ -24,6 +20,8 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        setTitle("Login");
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -44,6 +42,7 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jLabel1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 1, 14)); // NOI18N
         jLabel1.setText("Login");
 
         jLabel2.setText("Name");
@@ -61,27 +60,28 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(160, 160, 160)
+                .addGap(205, 205, 205)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jfPass)
-                    .addComponent(tfName))
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jfPass)
+                        .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1))
+                .addContainerGap(217, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLogin)
-                .addGap(53, 53, 53))
+                .addGap(29, 29, 29))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(37, 37, 37)
                 .addComponent(jLabel1)
-                .addGap(42, 42, 42)
+                .addGap(70, 70, 70)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
@@ -89,113 +89,33 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jfPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
                 .addComponent(btnLogin)
-                .addGap(18, 18, 18))
+                .addGap(24, 24, 24))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        String username = tfName.getText().trim();
+        String password = new String(jfPass.getPassword());
 
         try {
-            String username = tfName.getText().trim();
-            String password = new String(jfPass.getPassword()).trim();
+            AuthController authController = new AuthController();
+            authController.login(username, password);
 
-            // Validasi kosong
-            if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "Username dan password tidak boleh kosong!",
-                    "Peringatan",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir",
-                "root",
-                ""  // sesuaikan password MySQL kamu
-            );
-
-            String sql = "SELECT * FROM users WHERE username = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                String hashDiDB = rs.getString("password");
-
-                // Verifikasi password bcrypt
-                if (BCrypt.checkpw(password, hashDiDB)) {
-
-                    // Simpan data user ke variabel static
-                    SessionUser.id       = rs.getInt("id");
-                    SessionUser.username = rs.getString("username");
-                    SessionUser.role     = rs.getString("role");
-
-                    JOptionPane.showMessageDialog(this,
-                        "Selamat datang, " + SessionUser.username + "!\nRole: " + SessionUser.role);
-
-//                    // Buka form sesuai role
-//                    switch (SessionUser.role) {
-//                        case "super_admin":
-//                            JOptionPane.showMessageDialog(this,
-//                            "Welcome Super Admin",
-//                            "Peringatan",
-//                            JOptionPane.WARNING_MESSAGE);;
-//                            break;
-//                        case "admin":
-//                            JOptionPane.showMessageDialog(this,
-//                    "Welcome Admin",
-//                    "Peringatan",
-//                    JOptionPane.WARNING_MESSAGE);
-//                            break;
-//                        case "kasir":
-//                            JOptionPane.showMessageDialog(this,
-//                    "Welcode kasir",
-//                    "Peringatan",
-//                    JOptionPane.WARNING_MESSAGE);
-//                            break;
-//                        default:
-//                            JOptionPane.showMessageDialog(this, "Role tidak dikenali!");
-//                            return;
-//                    }
-//
-//                    this.dispose(); // tutup form login
-
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                        "Password salah!",
-                        "Login Gagal",
-                        JOptionPane.ERROR_MESSAGE);
-                }
-
-            } else {
-                JOptionPane.showMessageDialog(this,
-                    "Username tidak ditemukan!",
-                    "Login Gagal",
-                    JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Error: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
+                "Selamat datang, " + SessionUser.username + "!\nRole: " + SessionUser.role);
 
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            new DashboardProduct().setVisible(true);
+            this.dispose();
+
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(this,
+                e.getMessage(),
+                "Login Gagal",
+                JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
