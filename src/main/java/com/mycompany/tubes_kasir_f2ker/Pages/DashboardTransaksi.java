@@ -33,47 +33,35 @@ public class DashboardTransaksi extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         setTitle("Dashboard Transaksi");
 
+        model.addColumn("ID");
         model.addColumn("Nama Pegawai");
         model.addColumn("Jumlah Barang");
         model.addColumn("Total Transaksi");
         model.addColumn("Tanggal");
 
         tblTransaksi.setModel(model);
+        tblTransaksi.getColumnModel().getColumn(0).setMinWidth(0);
+        tblTransaksi.getColumnModel().getColumn(0).setMaxWidth(0);
+        tblTransaksi.getColumnModel().getColumn(0).setWidth(0);
 
-        tblTransaksi.getColumnModel().getColumn(0).setPreferredWidth(150);
-        tblTransaksi.getColumnModel().getColumn(1).setPreferredWidth(80);
-        tblTransaksi.getColumnModel().getColumn(2).setPreferredWidth(120);
-        tblTransaksi.getColumnModel().getColumn(3).setPreferredWidth(150);
+        tblTransaksi.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tblTransaksi.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tblTransaksi.getColumnModel().getColumn(3).setPreferredWidth(120);
+        tblTransaksi.getColumnModel().getColumn(4).setPreferredWidth(150);
 
         loadData("");
     }
     
     private void loadData(String keyword) {
-
         try {
-
             model.setRowCount(0);
-
-            for (Object[] row :
-                    controller.getDashboardTransaksi(
-                            keyword
-                    )) {
-
+            for (Object[] row : controller.getDashboardTransaksi(keyword)) {
                 model.addRow(row);
-
             }
-
         } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-
+            JOptionPane.showMessageDialog(this,
+                e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 
     /**
@@ -92,6 +80,7 @@ public class DashboardTransaksi extends javax.swing.JFrame {
         tfNama = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        btnDetail = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         Fitur = new javax.swing.JMenu();
         User = new javax.swing.JMenuItem();
@@ -127,6 +116,9 @@ public class DashboardTransaksi extends javax.swing.JFrame {
 
         jButton1.setText("Transaksi");
         jButton1.addActionListener(this::jButton1ActionPerformed);
+
+        btnDetail.setText("Detail Transaksi");
+        btnDetail.addActionListener(this::btnDetailActionPerformed);
 
         Fitur.setText("Fitur");
         Fitur.addActionListener(this::FiturActionPerformed);
@@ -166,6 +158,7 @@ public class DashboardTransaksi extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(56, 56, 56)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnDetail)
                     .addComponent(jButton1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,7 +184,9 @@ public class DashboardTransaksi extends javax.swing.JFrame {
                     .addComponent(btnCari))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDetail)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
@@ -246,6 +241,23 @@ public class DashboardTransaksi extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_FiturActionPerformed
 
+    private void btnDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetailActionPerformed
+        int row = tblTransaksi.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this,
+                "Pilih transaksi terlebih dahulu!",
+                "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Ambil id_transaksi dari kolom 0 yang tersembunyi
+        int idTransaksi = Integer.parseInt(tblTransaksi.getValueAt(row, 0).toString());
+
+        new DetailTransaksi(idTransaksi).setVisible(true);
+        this.dispose();
+
+    }//GEN-LAST:event_btnDetailActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -278,6 +290,7 @@ public class DashboardTransaksi extends javax.swing.JFrame {
     private javax.swing.JMenuItem Transaksi;
     private javax.swing.JMenuItem User;
     private javax.swing.JButton btnCari;
+    private javax.swing.JButton btnDetail;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

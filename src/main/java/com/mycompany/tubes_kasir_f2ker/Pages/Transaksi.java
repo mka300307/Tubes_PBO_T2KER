@@ -33,7 +33,7 @@ public class Transaksi extends javax.swing.JFrame {
         }
     };
 
-    private int idUserLogin = 1;
+    private int idUserLogin = SessionUser.id;
 
     /**
      * Creates new form Transaksi

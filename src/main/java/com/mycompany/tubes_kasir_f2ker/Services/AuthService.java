@@ -35,8 +35,7 @@ public class AuthService {
 
             ps.setString(1, username.trim());
             try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next())
-                    throw new RuntimeException("Username tidak ditemukan!");
+                if (!rs.next()) throw new RuntimeException("Username tidak ditemukan!");
 
                 String hashDiDB = rs.getString("password");
                 if (!BCrypt.checkpw(password, hashDiDB))
