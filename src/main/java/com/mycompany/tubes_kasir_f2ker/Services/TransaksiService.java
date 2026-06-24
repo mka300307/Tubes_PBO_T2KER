@@ -253,7 +253,7 @@ public class TransaksiService {
 
     public List<Object[]> getDashboardTransaksi(String keyword) {
         List<Object[]> list = new ArrayList<>();
-        String sql = "SELECT u.username, SUM(dt.jumlah) AS total_barang, "
+        String sql = "SELECT t.id_transaksi, u.username, SUM(dt.jumlah) AS total_barang, "
                    + "t.total_transaksi, t.tanggal "
                    + "FROM transaksi t "
                    + "JOIN users u ON t.id_user = u.id "
@@ -266,8 +266,11 @@ public class TransaksiService {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(new Object[]{
-                        rs.getString("username"), rs.getInt("total_barang"),
-                        rs.getDouble("total_transaksi"), rs.getString("tanggal")
+                        rs.getInt("id_transaksi"),
+                        rs.getString("username"),
+                        rs.getInt("total_barang"),
+                        rs.getDouble("total_transaksi"),
+                        rs.getString("tanggal")
                     });
                 }
             }
@@ -283,4 +286,6 @@ public class TransaksiService {
             rs.getString("username"), rs.getDouble("total_transaksi"), rs.getString("tanggal")
         );
     }
+    
+    
 }
