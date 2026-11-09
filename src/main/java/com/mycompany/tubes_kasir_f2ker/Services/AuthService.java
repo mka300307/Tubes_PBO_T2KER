@@ -25,6 +25,9 @@ public class AuthService {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASS);
     }
+    
+    SessionManager sm = new SessionManager();
+    
 
     public UserItem login(String username, String password) {
         validateInput(username, password);
@@ -47,10 +50,7 @@ public class AuthService {
                     rs.getString("role")
                 );
 
-                // Simpan ke session
-                SessionUser.id       = user.getId();
-                SessionUser.username = user.getUsername();
-                SessionUser.role     = user.getRole();
+                sm.setSession(user);
 
                 return user;
             }

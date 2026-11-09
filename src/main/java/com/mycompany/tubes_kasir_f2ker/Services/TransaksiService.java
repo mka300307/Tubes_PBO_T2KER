@@ -138,7 +138,7 @@ public class TransaksiService {
     }
 
     public List<DetailTransaksiItem> updateItem(
-            List<DetailTransaksiItem> listSementara,
+            List<DetailTransaksiItem> listSementara,                                                                                                        
             List<Integer> listIdProduk,
             int selectedRow, ProdukItem produkBaru, int jumlahBaru) {
 
