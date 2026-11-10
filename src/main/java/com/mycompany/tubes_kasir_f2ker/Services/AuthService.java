@@ -10,12 +10,11 @@ package com.mycompany.tubes_kasir_f2ker.Services;
  * @author attau
  */
 
-import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
 import com.mycompany.tubes_kasir_f2ker.model.UserItem;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
 
-public class AuthService {
+public class AuthService implements IAuthService {
 
     private static final String URL  = "jdbc:mysql://localhost:3306/db_kasir";
     private static final String USER = "root";
@@ -26,8 +25,12 @@ public class AuthService {
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
+    @Override
     public UserItem login(String username, String password) {
-        validateInput(username, password);
+        if (username == null || username.trim().isEmpty())
+            throw new RuntimeException("Username tidak boleh kosong!");
+        if (password == null || password.isEmpty())
+            throw new RuntimeException("Password tidak boleh kosong!");
 
         String sql = "SELECT id, username, password, role FROM users WHERE username = ?";
         try (Connection conn = getConnection();
@@ -41,33 +44,14 @@ public class AuthService {
                 if (!BCrypt.checkpw(password, hashDiDB))
                     throw new RuntimeException("Password salah!");
 
-                UserItem user = new UserItem(
+                return new UserItem(
                     rs.getInt("id"),
                     rs.getString("username"),
                     rs.getString("role")
                 );
-
-                // Simpan ke session
-                SessionUser.id       = user.getId();
-                SessionUser.username = user.getUsername();
-                SessionUser.role     = user.getRole();
-
-                return user;
             }
-
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Gagal koneksi ke database: " + e.getMessage(), e);
+            throw new RuntimeException("Gagal login: " + e.getMessage(), e);
         }
-    }
-
-    // ── Validasi ─────────────────────────────────────────────────────────────
-
-    private void validateInput(String username, String password) {
-        if (username == null || username.trim().isEmpty())
-            throw new RuntimeException("Username tidak boleh kosong!");
-        if (password == null || password.isEmpty())
-            throw new RuntimeException("Password tidak boleh kosong!");
     }
 }

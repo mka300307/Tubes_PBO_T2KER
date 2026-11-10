@@ -5,7 +5,9 @@
 package com.mycompany.tubes_kasir_f2ker.Pages;
 
 import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
+import com.mycompany.tubes_kasir_f2ker.controller.KategoriController;
 import com.mycompany.tubes_kasir_f2ker.controller.ProdukController;
+import com.mycompany.tubes_kasir_f2ker.model.KategoriItem;
 import com.mycompany.tubes_kasir_f2ker.model.ProdukItem;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +24,7 @@ import javax.swing.table.TableRowSorter;
  * @author attau
  */
 public class ManageProduk extends javax.swing.JFrame {
+    KategoriController kategoriController = new KategoriController();
     private final ProdukController produkController = new ProdukController();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageProduk.class.getName());
     private java.util.Map<String, Integer> kategoriMap = new java.util.HashMap<>();
@@ -65,44 +68,17 @@ public class ManageProduk extends javax.swing.JFrame {
         loadDataProduk("");
     }
     
+// AFTER: ManageProduk.java (View murni menangani UI tanpa kode SQL)
     private void loadKategori() {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir", "root", ""
-            );
-
-            ps = conn.prepareStatement(
-                "SELECT id_kategori, nama_kategori FROM kategori_produk ORDER BY nama_kategori ASC"
-            );
-            rs = ps.executeQuery();
-
+            List<KategoriItem> list = kategoriController.getAllKategori();
             cmbKategori.removeAllItems();
-            kategoriMap.clear();
-
             cmbKategori.addItem("-- Pilih Kategori --");
-
-            while (rs.next()) {
-                String nama = rs.getString("nama_kategori");
-                int id      = rs.getInt("id_kategori");
-                cmbKategori.addItem(nama);
-                kategoriMap.put(nama, id);   
+            for (KategoriItem k : list) {
+                cmbKategori.addItem(k.getNama());
             }
-
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                "Gagal load kategori: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) { ex.printStackTrace(); }
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
