@@ -9,6 +9,7 @@ com\mycompany\tubes_kasir_f2ker\Pages\ManageUser.class
 com\mycompany\tubes_kasir_f2ker\model\SessionUser.class
 com\mycompany\tubes_kasir_f2ker\Services\UserService.class
 com\mycompany\tubes_kasir_f2ker\Pages\DetailTransaksi$1.class
+com\mycompany\tubes_kasir_f2ker\Services\PasswordHasher.class
 com\mycompany\tubes_kasir_f2ker\Pages\DashboardKategori.class
 com\mycompany\tubes_kasir_f2ker\Pages\ManageKategori$2.class
 com\mycompany\tubes_kasir_f2ker\Pages\DashboardProduct.class
@@ -39,5 +40,6 @@ com\mycompany\tubes_kasir_f2ker\Pages\Transaksi$1.class
 com\mycompany\tubes_kasir_f2ker\Pages\DashboardUser$1.class
 com\mycompany\tubes_kasir_f2ker\Pages\ManageKategori$1.class
 com\mycompany\tubes_kasir_f2ker\Pages\DashboardKategori$1.class
+com\mycompany\tubes_kasir_f2ker\Services\UserValidator.class
 com\mycompany\tubes_kasir_f2ker\controller\TransaksiController.class
 com\mycompany\tubes_kasir_f2ker\Pages\ManageUser$2.class
