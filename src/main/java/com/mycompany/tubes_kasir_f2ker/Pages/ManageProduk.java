@@ -4,14 +4,13 @@
  */
 package com.mycompany.tubes_kasir_f2ker.Pages;
 
+import com.mycompany.tubes_kasir_f2ker.controller.KategoriController;
 import com.mycompany.tubes_kasir_f2ker.model.SessionUser;
 import com.mycompany.tubes_kasir_f2ker.controller.ProdukController;
 import com.mycompany.tubes_kasir_f2ker.model.ProdukItem;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.mycompany.tubes_kasir_f2ker.controller.KategoriController;
+import com.mycompany.tubes_kasir_f2ker.model.KategoriItem;
+import java.util.Comparator;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,6 +22,7 @@ import javax.swing.table.TableRowSorter;
  */
 public class ManageProduk extends javax.swing.JFrame {
     private final ProdukController produkController = new ProdukController();
+    private final KategoriController kategoriController = new KategoriController();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ManageProduk.class.getName());
     private java.util.Map<String, Integer> kategoriMap = new java.util.HashMap<>();
 
@@ -66,43 +66,34 @@ public class ManageProduk extends javax.swing.JFrame {
     }
     
     private void loadKategori() {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/db_kasir", "root", ""
-            );
+            List<KategoriItem> list
+                    = kategoriController.getAllKategori();
 
-            ps = conn.prepareStatement(
-                "SELECT id_kategori, nama_kategori FROM kategori_produk ORDER BY nama_kategori ASC"
+            list.sort(
+                    Comparator.comparing(
+                            KategoriItem::getNama,
+                            String.CASE_INSENSITIVE_ORDER
+                    )
             );
-            rs = ps.executeQuery();
 
             cmbKategori.removeAllItems();
             kategoriMap.clear();
 
             cmbKategori.addItem("-- Pilih Kategori --");
 
-            while (rs.next()) {
-                String nama = rs.getString("nama_kategori");
-                int id      = rs.getInt("id_kategori");
+            for (KategoriItem kategori : list) {
+                String nama = kategori.getNama();
+                int id = kategori.getId();
+
                 cmbKategori.addItem(nama);
-                kategoriMap.put(nama, id);   
+                kategoriMap.put(nama, id);
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Gagal load kategori: " + e.getMessage(),
-                "Error", JOptionPane.ERROR_MESSAGE);
-        } finally {
-            try {
-                if (rs != null)   rs.close();
-                if (ps != null)   ps.close();
-                if (conn != null) conn.close();
-            } catch (SQLException ex) { ex.printStackTrace(); }
+                    "Gagal load kategori: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
